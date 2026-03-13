@@ -1,4 +1,4 @@
-FROM ghcr.io/openclaw/openclaw:2026.3.11-slim
+FROM ghcr.io/openclaw/openclaw:2026.3.12-slim
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TZ=Asia/Shanghai \

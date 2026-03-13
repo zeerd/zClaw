@@ -15,5 +15,4 @@ if [ ! -f $ENV_FILE ] ; then
 	echo "OPENCLAW_GATEWAY_TOKEN=$OPENCLAW_GATEWAY_TOKEN" >> $ENV_FILE
 fi
 
-docker build -t zclaw:2026.3.11-$VER .
-
+docker build -t zclaw:2026.3.12-$VER .
