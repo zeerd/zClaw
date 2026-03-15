@@ -8,5 +8,4 @@ export HOMEBREW_CACHE="${HOME}/.cache/Homebrew"
 
 export PLAYWRIGHT_BROWSERS_PATH=/app/ms-playwright
 
-PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
-
+PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$HOME/.local/bin:$PATH"
