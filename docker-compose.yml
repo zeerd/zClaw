@@ -27,6 +27,9 @@ services:
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
     init: true
     restart: unless-stopped
+    extra_hosts:
+      # Add host.docker.internal for Linux to allow containers to access host services using this hostname
+      - "host.docker.internal:host-gateway"
     command:
       [
         "/bin/bash", "-c", "/app/cmd.sh"

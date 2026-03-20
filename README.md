@@ -38,6 +38,10 @@ pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 修改`Python`脚本，将第一行改成`#!/home/node/.openclaw/workspace/.venv/bin/python`。
 
+### skills
+
+More [skills](https://github.com/zeerd/zClaw-Skills).
+
 ## Debug
 
 ```bash
