@@ -32,15 +32,29 @@ RUN ln -sf node /home/linuxbrew
 COPY --chown=node:node cmd.sh /app/cmd.sh
 RUN chmod +x /app/cmd.sh
 
+# 如果期望龙虾有更高的权限
 ARG OPENCLAW_DOCKER_SUDO=""
 RUN if [ -n "$OPENCLAW_DOCKER_SUDO" ]; then \
       apt-get install -y sudo && (echo "node:node" | chpasswd) && usermod -aG sudo node; \
     fi
 
+# 为 HomeBrew 准备安装环境
 RUN mkdir -p /opt/linuxbrew && chown node:node /opt/linuxbrew
+# 很多第三方技能、工具还是会去/home/node/.cache/ms-playwright目录下找浏览器，所以这里做个软链接
+RUN install -d /home/node/.cache && ln -sf /app/ms-playwright /home/node/.cache/ms-playwright
+# 防止意外发生，这里再次修改权限，确保node用户对/home/node/.cache目录有读写权限
+RUN chown -R node:node /home/node/.cache
+
+# HomeBrew 必须用非 root 用户安装，而且必须安装在 /home/linuxbrew 目录下
+# 这与持久化冲突，因此，安装之后要临时迁移到/opt/linuxbrew目录下
+# 首次持久化成功之后再迁移回/home/linuxbrew目录下
 USER node
 RUN curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash && \
     mv /home/linuxbrew/.linuxbrew /opt/linuxbrew
+
+RUN git clone https://github.com/zeerd/zClaw-Skills /app/extensions/zclaw-skills/ && \
+    cd /app/extensions/zclaw-skills/ && \
+    npm install
 
 HEALTHCHECK --interval=3m --timeout=10s --start-period=15s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
