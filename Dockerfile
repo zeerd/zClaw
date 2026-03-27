@@ -10,6 +10,7 @@ USER root
 
 RUN sed -i 's@deb.debian.org@mirrors.tuna.tsinghua.edu.cn@g' /etc/apt/sources.list.d/debian.sources
 RUN apt-get update
+RUN apt-get install -y --no-install-recommends python3 python3-pip python3-venv wget curl
 RUN apt-get install -y --no-install-recommends openssh-client golang-go tmux vim ca-certificates
 RUN update-ca-certificates
 
@@ -27,7 +28,7 @@ RUN --mount=type=cache,id=openclaw-bookworm-apt-cache,target=/var/cache/apt,shar
   chown -R node:node /app/ms-playwright
 
 #RUN curl -fsSL https://skillhub-1251783334.cos.ap-guangzhou.myqcloud.com/install/install.sh | bash
-RUN curl -LsSf https://astral.sh/uv/install.sh | bash
+RUN curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="/opt/uv/bin" sh
 RUN ln -sf node /home/linuxbrew
 COPY --chown=node:node cmd.sh /app/cmd.sh
 RUN chmod +x /app/cmd.sh
@@ -43,7 +44,7 @@ RUN mkdir -p /opt/linuxbrew && chown node:node /opt/linuxbrew
 # 很多第三方技能、工具还是会去/home/node/.cache/ms-playwright目录下找浏览器，所以这里做个软链接
 RUN install -d /home/node/.cache && ln -sf /app/ms-playwright /home/node/.cache/ms-playwright
 # 防止意外发生，这里再次修改权限，确保node用户对/home/node/.cache目录有读写权限
-RUN chown -R node:node /home/node/.cache
+RUN chown node:node /home/node/.cache
 
 # HomeBrew 必须用非 root 用户安装，而且必须安装在 /home/linuxbrew 目录下
 # 这与持久化冲突，因此，安装之后要临时迁移到/opt/linuxbrew目录下

@@ -11,10 +11,34 @@ Build custom docker image of [`OpenClaw`](https://github.com/openclaw/openclaw) 
 sudo apt install docker-buildx
 # 构建
 ./build.sh
+# 初始化
+install -d $HOME$/.openclaw/.linuxbrew
+install -d $HOME$/.openclaw/workspace
+docker compose run openclaw-gateway openclaw onboard
+docker compose run openclaw-gateway openclaw config set gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback true
 # 启动
-mkdir -p /$HOME$/.openclaw/.linuxbrew
-docker compose up -d
+docker compose up -d openclaw-gateway
 ```
+
+使用浏览器链接`http://127.0.0.1:18789`，然后按下面操作：
+
+```bash
+# 登陆龙虾控制台
+docker compose exec openclaw-gateway bash
+# 执行命令：
+openclaw gateway run
+openclaw dashboard --no-open
+```
+
+控制台中会显示一个带`token`的链接，在浏览器中打开。然后，继续：
+
+```bash
+openclaw devices list
+# 在列出的第一个表格中找到 Request ID
+openclaw devices approve <Request ID>
+```
+
+刷新浏览器页面。
 
 ## Components
 
